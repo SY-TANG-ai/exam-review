@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# WorkBuddy / editor
+.workbuddy/
+.vscode/
+.idea/
+
+# Generated files (users will generate their own)
+*.tex
+!md2tex/examples/*.tex
+!skill/*.md
