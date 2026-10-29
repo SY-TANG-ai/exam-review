@@ -9,12 +9,10 @@ build/
 .DS_Store
 Thumbs.db
 
-# WorkBuddy / editor
-.workbuddy/
-.vscode/
-.idea/
-
 # Generated files (users will generate their own)
 *.tex
 !md2tex/examples/*.tex
 !skill/*.md
+
+# design note (must stay after !skill/*.md to take effect)
+skill/design-notes.md

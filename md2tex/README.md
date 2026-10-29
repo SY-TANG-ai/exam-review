@@ -1,25 +1,32 @@
-# md2tex — Markdown Cheat Sheet → XeLaTeX
+# md2tex — Markdown → XeLaTeX
 
-Convert a Markdown Cheat Sheet into a single self-contained `.tex` file. Upload to Overleaf (XeLaTeX) and compile.
+Convert Markdown into a single self-contained `.tex` file. Upload to Overleaf (XeLaTeX) and compile.
 
-Two layout modes are available:
+Three layout modes:
 
 | Mode | File | Layout | Best for |
 |------|------|--------|----------|
-| **Tight** | `md2tex-tight.py` | A4 landscape, 3mm margins, **5pt**, 7 columns, >=4 cols = large table | Maximum content per page, exam hall |
-| **Loose** | `md2tex-loose.py` | A4 portrait, 1cm margins, **7pt**, 2 columns, >=6 cols = large table | Comfortable reading, revision desk |
+| **Read** | `md2tex-read.py` | A4 portrait, 1.3cm margins, **8pt**, 2 columns, all tables in place | 逐课讲解 / any long-form Markdown you want to read and annotate on paper |
+| **Tight** | `md2tex-tight.py` | A4 landscape, 3mm margins, **5pt**, 7 columns, >=4 cols = large table | Cheat Sheet — maximum content per page, exam hall |
+| **Loose** | `md2tex-loose.py` | A4 portrait, 1cm margins, **7pt**, 2 columns, >=6 cols = large table | Cheat Sheet — comfortable reading, revision desk |
 
 ---
 
 ## Quick start
 
-### Tight layout (compact)
+### Reading layout (逐课讲解)
+
+```bash
+python md2tex-read.py "第01课-xxx.md" -o "第01课-xxx.tex"
+```
+
+### Tight layout (compact Cheat Sheet)
 
 ```bash
 python md2tex-tight.py "Cheat Sheet.md" -o "cheatsheet.tex"
 ```
 
-### Loose layout (generous)
+### Loose layout (generous Cheat Sheet)
 
 ```bash
 python md2tex-loose.py "Cheat Sheet.md" -o "cheatsheet.tex"
@@ -28,13 +35,32 @@ python md2tex-loose.py "Cheat Sheet.md" -o "cheatsheet.tex"
 ### Custom columns
 
 ```bash
+python md2tex-read.py  input.md -o out.tex -c 1 --fontsize 9
 python md2tex-tight.py input.md -o out.tex --columns 5    # override default 7
 python md2tex-loose.py input.md -o out.tex --columns 3    # override default 2
 ```
 
 ---
 
-## Comparison
+## Read mode specifics
+
+`md2tex-read.py` is tuned for revision notes, not cheat sheets:
+
+| Feature | Behaviour |
+|---------|-----------|
+| Tables | Stay in place (never moved to the end); column widths auto-sized by content, font auto-shrinks for 4+ columns |
+| Symbols | `✓ ✗ ✅ ❌ ⭐ ★ ⇒ ⟹ ⟺ ● ◉ ◇ ◆ ≤ ≥ ≠ ≈ ∞` → math-safe forms |
+| Decorative marks | `📌 🔴 🟡 🟢 🔵 ⚪ 🎯 ❗` stripped (heading/text still carries the meaning) |
+| `⚠️` in a heading | removed; elsewhere → `注意：` |
+| `==highlight==` | delimiters removed |
+| Box drawing in code blocks | `─ │ ├ └` → ASCII `- \| +` |
+| Obsidian callouts | `> [!note] text` → quote text only |
+| Code | fenced and inline code are protected — `==`, `*`, `_`, `~`, `^` stay literal |
+| Fonts | Verdana → DejaVu Sans → TeX Gyre Heros fallback (compiles on Overleaf without Verdana) |
+
+---
+
+## Comparison (cheat-sheet modes)
 
 | Spec | Tight | Loose |
 |------|-------|-------|
@@ -64,12 +90,13 @@ python md2tex-loose.py input.md -o out.tex --columns 3    # override default 2
 
 ## Usage with exam-review skill
 
-After the skill generates `Cheat Sheet.md`, tell your agent:
+The skill calls these itself when you ask for a printable version:
 
 | You say | The agent runs |
 |---------|---------------|
-| *"转成 LaTeX"* / *"输出 PDF"* | `md2tex-tight.py` (tight, default) |
-| *"转成宽松版 LaTeX"* / *"宽松排版"* | `md2tex-loose.py` (loose) |
+| *"把第01课转成 PDF / 打印版"* / *"转成 LaTeX"*（对逐课讲解或你自己的 .md） | `md2tex-read.py` |
+| *"Cheat Sheet 转成 LaTeX"* / *"输出 PDF"* | `md2tex-tight.py` (tight, default) |
+| *"Cheat Sheet 转成宽松版"* / *"宽松排版"* | `md2tex-loose.py` (loose) |
 
 ---
 
@@ -94,7 +121,7 @@ Adjust layout parameters directly in the `.tex` file.
 
 ## Known limitations
 
-- Emoji preserved as-is (XeLaTeX + Verdana usually renders them)
+- Read mode strips decorative emoji; cheat-sheet modes keep them as-is
 - Code blocks (`` ``` ``) are monochrome, no syntax highlighting
 - Nested lists: one level only
 - Anchor links `[text](#ref)` → text only (link dropped)
