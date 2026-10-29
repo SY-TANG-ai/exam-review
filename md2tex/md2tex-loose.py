@@ -139,12 +139,12 @@ PREAMBLE_TEMPLATE = r"""% ======================================================
 \usepackage{{enumitem}}
 \setlist[itemize]{{
   leftmargin=1.2em,
-  itemsep=1pt, parsep=0pt, topsep=1pt, partopsep=0pt,
+  itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt,
   label={{\textcolor{{SectionColor}}{{\textbullet}}}}
 }}
 \setlist[enumerate]{{
   leftmargin=1.2em,
-  itemsep=1pt, parsep=0pt, topsep=1pt, partopsep=0pt
+  itemsep=0pt, parsep=0pt, topsep=0pt, partopsep=0pt
 }}
 
 % -------------------- 杂项 --------------------
@@ -155,25 +155,25 @@ PREAMBLE_TEMPLATE = r"""% ======================================================
 
 % -------------------- 段落与行距 --------------------
 \setlength{{\parindent}}{{0pt}}
-\setlength{{\parskip}}{{2pt}}
+\setlength{{\parskip}}{{0pt}}
 
 % -------------------- 标题样式（全部 7pt，只变色） --------------------
 \usepackage{{titlesec}}
 
 \titleformat{{\section}}
   {{\fontsize{{7pt}}{{9pt}}\selectfont\bfseries\color{{SectionColor}}}}
-  {{}}{{0em}}{{}}[\vspace{{0.5em}}]
-\titlespacing*{{\section}}{{0pt}}{{0.7em}}{{0.3em}}
+  {{}}{{0em}}{{}}[]
+\titlespacing*{{\section}}{{0pt}}{{0pt}}{{0pt}}
 
 \titleformat{{\subsection}}
   {{\fontsize{{7pt}}{{9pt}}\selectfont\bfseries\color{{SubsectionColor}}}}
-  {{}}{{0em}}{{}}[\vspace{{0.3em}}]
-\titlespacing*{{\subsection}}{{0pt}}{{0.5em}}{{0.2em}}
+  {{}}{{0em}}{{}}[]
+\titlespacing*{{\subsection}}{{0pt}}{{0pt}}{{0pt}}
 
 \titleformat{{\subsubsection}}
   {{\fontsize{{7pt}}{{9pt}}\selectfont\bfseries\color{{SubsubsectionColor}}}}
-  {{}}{{0em}}{{}}[\vspace{{0.2em}}]
-\titlespacing*{{\subsubsection}}{{0pt}}{{0.4em}}{{0.15em}}
+  {{}}{{0em}}{{}}[]
+\titlespacing*{{\subsubsection}}{{0pt}}{{0pt}}{{0pt}}
 
 % -------------------- 表格样式宏 --------------------
 \newenvironment{{csheettable}}[1]{{%  #1 = column spec
@@ -219,6 +219,7 @@ PREAMBLE_TEMPLATE = r"""% ======================================================
 \begin{{document}}
 \fontsize{{7pt}}{{9pt}}\selectfont
 \raggedright
+\raggedcolumns
 \begin{{multicols}}{{{num_columns}}}
 """
 
@@ -284,7 +285,7 @@ class Md2Tex:
             if re.fullmatch(r"\s*-{3,}\s*", line):
                 self._flush_any()
                 self._close_lists_if_needed(0)
-                self._emit("\\csheetrule")
+                # skip: 用户要求忽略"---"，不转成 rule
                 i += 1
                 continue
 
